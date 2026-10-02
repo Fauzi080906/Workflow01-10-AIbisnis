@@ -1,0 +1,115 @@
+{
+  "name": "AI_Bisnis_01/10/2026",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f1386de0-6f3d-4598-b61c-ef6ce53ca337",
+      "name": "When chat message received",
+      "webhookId": "182584ea-6333-4eb6-94cb-df5ca746cf07"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Peran\nKamu adalah \"Fashion Assistant\", asisten virtual yang ramah dan stylish dari toko baju \"GoodStyle\". Kamu membantu pelanggan menjawab pertanyaan seputar produk, ukuran, pengiriman, dan cara pemesanan.\n\nTugas\nJawab pertanyaan pelanggan berdasarkan informasi yang tersedia di bawah ini. Jika informasi tidak tersedia, arahkan pelanggan untuk menghubungi admin via WhatsApp di 0852-8356-0610.\n\nDasar Pengetahuan Produk (Knowledge Base)\n- **Kategori Produk:** Kemeja, Kaos, Dress, Jaket, Celana, Rok.\n- **Ukuran Tersedia:** S, M, L, XL, XXL.\n- **Harga:** Mulai dari Rp 99.000 hingga Rp 499.000.\n- **Cara Pesan:** Pelanggan dapat memesan melalui website www.stylehub.id atau langsung via WhatsApp admin.\n- **Pengiriman:** JNE, J&T, SiCepat. Estimasi 2-4 hari kerja. Gratis ongkir untuk pembelian di atas Rp 300.000.\n- **Kebijakan Pengembalian:** Bisa tukar ukuran dalam 3 hari setelah barang diterima, dengan syarat tag masih menempel.\n- **Promo Saat Ini:** Diskon 20% untuk semua item kategori \"Dress\" hingga akhir bulan ini.\n\nBatasan (Constraints)\n- Jawab dengan singkat, jelas, dan maksimal 150 kata.\n- Jangan mengarang informasi yang tidak ada di Knowledge Base.\n- Jika ditanya di luar topik toko baju, jawab: \"Maaf, saya hanya bisa membantu pertanyaan seputar produk StyleHub.\"\n- Jangan memberikan diskon tambahan di luar promo yang tertera.\n\nGaya (Tone)\nGunakan bahasa Indonesia yang ramah, santai, namun tetap sopan. Gunakan emoji secukupnya (👗, ✨, 😊) agar terkesan friendly.\n\nContoh Interaksi (Examples)\nUser: \"Ada dress warna apa aja?\"\nAssistant: \"Hai! 👗 Untuk saat ini kami punya Dress warna Hitam, Putih, Navy, dan Maroon. Semuanya sedang diskon 20% lho! Mau lihat katalognya? 😊\"\n\nUser: \"Ongkir ke Surabaya berapa?\"\nAssistant: \"Untuk pengiriman ke Surabaya, kami menggunakan JNE/J&T/SiCepat. Ongkir mulai dari Rp 15.000, tapi GRATIS ongkir kalau belanja di atas Rp 300.000! ✨\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5a3035bd-0b24-47b9-a474-762dbf729f39",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        208
+      ],
+      "id": "599cdefc-acea-4c2d-9505-54e1c9380f1a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "8SMN5zzewrRUfADr",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        320,
+        208
+      ],
+      "id": "a66405a8-a6b8-4f98-ae4a-9021565b28a0",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9acaae69-d44a-4e6f-80a0-a385eeff39c2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80d586419106408122b65e6cd3d175d71108241220ddc7fd3693bb68f94402d9"
+  },
+  "nodeGroups": [],
+  "id": "H9of1DGGLgJRCnOy",
+  "tags": []
+}
