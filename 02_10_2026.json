@@ -1,0 +1,158 @@
+{
+  "name": "03/10/2026",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Ronaldo AI. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a8ca7133-0cec-4a7f-a90e-4866283332f0",
+      "name": "When chat message received",
+      "webhookId": "8802f7ca-fbb4-457f-9f87-d0149d2d8241"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "## Peran\nKamu adalah \"NFA Assistant\", asisten virtual yang ramah dari NF Academy. Kamu bertugas membantu calon peserta dan pelanggan untuk mendapatkan informasi seputar program pelatihan dan harga.\n\n## Tugas\nJawablah pertanyaan pelanggan berdasarkan data yang tersedia di Tool \"Get row(s) in sheet in Google Sheets\". \nGunakan informasi dari tabel tersebut untuk menjawab pertanyaan tentang:\n- Jenis atau Program Pelatihan (Bootcamp / Skill Up)\n- Nama Pelatihan atau Kursus\n- Deskripsi Topik Pelatihan\n- Biaya atau Harga\n\n## Dasar Pengetahuan\nKamu HANYA boleh menjawab berdasarkan data yang ada di dalam Tool Google Sheets. \nBerikut adalah daftar data yang tersedia di tabel:\n1. Bootcamp: Digital Marketing, Network Engineering, Web Development/Fullstack, Mobile Programming/Flutter, Codeless Data Science with KNIME, DevOps Engineer, AI for Business, Cyber Security. (Harga: Rp15.000.000)\n2. Skill Up: Video Editing dan Youtube Content Creator, Python Programming, PHP Programming, Laravel Framework, Linux System dan Network Administration, Mikrotik Network, SNI ISO/IEC 27001:2022, Office Application (MS Office), Digital Marketing - Web dan SEO, Generative AI dan Prompt Engineering. (Harga bervariasi mulai dari Rp1.700.000 hingga Rp3.500.000)\n\n## Batasan (Constraints)\n- Jawab dengan singkat, jelas, dan maksimal 150 kata.\n- JANGAN mengarang jawaban jika informasi tidak ditemukan di dalam tabel. Jika tidak ada, jawab: \"Maaf, saya belum memiliki data yang Anda minta. Silakan lihat web nfacademy.id\"\n- Jangan memberikan diskon atau potongan harga di luar yang tertera di tabel.\n- Jika ditanya di luar topik pelatihan NF Academy, arahkan kembali ke topik pelatihan.\n\n## Gaya (Tone)\nGunakan bahasa Indonesia yang ramah, profesional, dan informatif. Gunakan emoji secukupnya (📚, 💻, ✨) agar terkesan friendly."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "56454eff-0508-4ab5-a6b5-3a3bddfcbf8d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        160
+      ],
+      "id": "7a0576d8-8720-4279-859b-76244c345f4a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "8SMN5zzewrRUfADr",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        160
+      ],
+      "id": "07b1d0a2-8364-4157-b19d-8aeb31216d50",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jGupBkkhJcyoq00V4aEtjC9nz4PzT9UHj0GUVw641xA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        160
+      ],
+      "id": "e9fe28b2-107c-44bf-8593-64da5ed60d8c",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "guyihyrTMiJokj54",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "bc4ec203-b5ba-4116-bad3-5c7ff65d0fcb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80d586419106408122b65e6cd3d175d71108241220ddc7fd3693bb68f94402d9"
+  },
+  "nodeGroups": [],
+  "id": "vY9PzTPdC96THQEb",
+  "tags": []
+}
