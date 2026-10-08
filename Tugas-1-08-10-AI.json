@@ -1,0 +1,109 @@
+{
+  "name": "Tugas-1-08-10-AI",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Pendaftaran SIB Mandiri NF Academy Batch 5",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nama",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Kelas",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Ai For Business"
+                  },
+                  {
+                    "option": "Codeless Data Science"
+                  },
+                  {
+                    "option": "DevOps Engineer"
+                  },
+                  {
+                    "option": "Digital Marketing"
+                  },
+                  {
+                    "option": "Fullstack Developer"
+                  },
+                  {
+                    "option": "Mobile Apps Developer"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c6d1ac1a-783c-4f19-b0a9-2965ef53bed2",
+      "name": "On form submission",
+      "webhookId": "8053f0d4-b186-4bc8-b69c-ec9597700197"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Informasi Pendaftaran SIBM NF Academy Batch 5",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<style>\n  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n  .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }\n  h2 { color: #2c3e50; }\n  .data-box { background-color: #f4f6f8; padding: 15px; border-radius: 5px; margin: 15px 0; }\n  .data-box p { margin: 5px 0; }\n  .footer { margin-top: 20px; font-size: 12px; color: #888; }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>Konfirmasi Pendaftaran SIB Mandiri Batch 4 NF Academy</h2>\n    <p>Halo <strong>{{ $json.Nama }}</strong>,</p>\n    <p>Terima kasih telah melakukan pendaftaran. Data Anda telah berhasil kami terima di sistem NF Academy.</p>\n    <p>Berikut adalah rincian data yang Anda kirimkan:</p>\n    \n    <div class=\"data-box\">\n      <p><strong>Nama Lengkap:</strong> {{ $json.Nama }}</p>\n      <p><strong>Email Terdaftar:</strong> {{ $json.Email }}</p>\n      <p><strong>Kelas Pilihan:</strong> {{ $json.Kelas }}</p>\n    </div>\n    \n    <p>Mohon cek kembali data di atas. Jika ada kesalahan atau pertanyaan lebih lanjut, silakan balas email ini.</p>\n    <p>Selanjutnya, tim kami akan melakukan verifikasi dan menghubungi Anda untuk langkah berikutnya.</p>\n    \n    <p>Salam hangat,<br><strong>Tim Penerimaan NF Academy</strong></p>\n    \n    <div class=\"footer\">\n      Email ini dikirim secara otomatis. Mohon tidak membalas ke alamat ini.\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "96efe950-98fd-4491-b1df-dd35ccc097e6",
+      "name": "Send a message",
+      "webhookId": "2364aa96-8b41-4d7d-ab42-93cc6a254377",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "bktBNpFnlfVOhYbM",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "72589884-11ed-45ff-b57c-1a639f54dda3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80d586419106408122b65e6cd3d175d71108241220ddc7fd3693bb68f94402d9"
+  },
+  "nodeGroups": [],
+  "id": "oXjejeHc8ZE2EWmN",
+  "tags": []
+}
