@@ -1,0 +1,337 @@
+{
+  "name": "Tugas-6-AI-15-10-2026",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2195d185-9944-4e54-bc86-df3a3f5be043",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc",
+          "mode": "list",
+          "cachedResultName": "Best Time to Post Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Data Posting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "52d0bb81-3e66-469e-88b3-1a1c18a43ac5",
+      "name": "Baca Data Posting",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F9Oylq7SnhclaXkh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc",
+          "mode": "list",
+          "cachedResultName": "Best Time to Post Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 723653925,
+          "mode": "list",
+          "cachedResultName": "Hasil Analisis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit#gid=723653925"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        0
+      ],
+      "id": "7d2291f0-5fc6-412a-a874-d4852c2dd5c6",
+      "name": "Hapus Hasil Lama",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F9Oylq7SnhclaXkh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc",
+          "mode": "list",
+          "cachedResultName": "Best Time to Post Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 723653925,
+          "mode": "list",
+          "cachedResultName": "Hasil Analisis",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cnzcgVICN_hck2M2Eg6sHj5KPJ1D051tiyG36mupIfc/edit#gid=723653925"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Jam Posting": "={{ $json.hour }}",
+            "Avg Engagement": "={{ $json.avgEngagement }}",
+            "Avg Likes": "={{ $json.avgLikes }}",
+            "Avg Comments": "={{ $json.avgComments }}",
+            "Avg Shares": "={{ $json.avgShares }}",
+            "Total Post": "={{ $json.totalPosts }}",
+            "Rekomendasi": "={{ $json.rekomendasi }}"
+          },
+          "matchingColumns": [
+            "Jam Posting"
+          ],
+          "schema": [
+            {
+              "id": "Jam Posting",
+              "displayName": "Jam Posting",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Avg Engagement",
+              "displayName": "Avg Engagement",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Avg Likes",
+              "displayName": "Avg Likes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Avg Comments",
+              "displayName": "Avg Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Avg Shares",
+              "displayName": "Avg Shares",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total Post",
+              "displayName": "Total Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Rekomendasi",
+              "displayName": "Rekomendasi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        0
+      ],
+      "id": "1a3b8ad2-e7f2-4f04-af92-7d83c41fd692",
+      "name": "Tulis Hasil Analisis",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F9Oylq7SnhclaXkh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ambil data dari node \"Analisis Waktu Terbaik\" (bukan dari node Google Sheets)\nconst items = $('Analisis Waktu Terbaik').all();\n\nif (!items || items.length === 0) {\n  return [{ json: { message: '❌ Tidak ada data untuk dikirim' } }];\n}\n\n// Ambil top 5 jam terbaik\nconst top5 = items.slice(0, 5);\n\nlet message = `📊 *HASIL ANALISIS WAKTU POSTING TERBAIK*\\n\\n`;\nmessage += `🏆 *TOP 5 JAM TERBAIK:*\\n\\n`;\n\ntop5.forEach((item, index) => {\n  const data = item.json;\n  const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '⭐';\n  \n  message += `${medal} *JAM ${data.hour}*\\n`;\n  message += `   📈 Avg Engagement: *${data.avgEngagement}*\\n`;\n  message += `   ❤️ Avg Likes: ${data.avgLikes}\\n`;\n  message += `   💬 Avg Comments: ${data.avgComments}\\n`;\n  message += `   🔄 Avg Shares: ${data.avgShares}\\n`;\n  message += `   📝 Total Post: ${data.totalPosts} post\\n`;\n  message += `   ⭐ ${data.rekomendasi}\\n\\n`;\n});\n\nmessage += `_Gunakan insight ini untuk meningkatkan engagement! 🚀_`;\n\nreturn [{ json: { message: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "9751ca43-dfbe-49e1-a1ba-78bb2afe5d31",
+      "name": "Format Pesan Telegram"
+    },
+    {
+      "parameters": {
+        "chatId": "8349128220",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "681c7516-95f3-4cd1-9f4b-e65e5e6ef90f",
+      "name": "Send a text message",
+      "webhookId": "42d98eee-2bb5-4866-8b9d-511923139ddd",
+      "credentials": {
+        "telegramApi": {
+          "id": "UBeSe0l2TV3RvlxY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ambil semua data dari Google Sheets\nconst items = $input.all();\n\nconsole.log('Total items:', items.length);\n\n// Validasi data\nif (!items || items.length === 0) {\n  throw new Error('Tidak ada data yang dibaca dari Google Sheets!');\n}\n\n// Kelompokkan data berdasarkan jam\nconst hourlyData = {};\n\nfor (const item of items) {\n  const row = item.json;\n  const hour = row['Jam Posting'];\n  const likes = parseInt(row['Likes']) || 0;\n  const comments = parseInt(row['Comments']) || 0;\n  const shares = parseInt(row['Shares']) || 0;\n  \n  // Hitung engagement score dengan bobot\n  // Likes x1, Comments x2, Shares x3\n  const engagement = likes + (comments * 2) + (shares * 3);\n  \n  if (!hourlyData[hour]) {\n    hourlyData[hour] = {\n      hour: hour,\n      totalEngagement: 0,\n      totalLikes: 0,\n      totalComments: 0,\n      totalShares: 0,\n      totalPosts: 0\n    };\n  }\n  \n  hourlyData[hour].totalEngagement += engagement;\n  hourlyData[hour].totalLikes += likes;\n  hourlyData[hour].totalComments += comments;\n  hourlyData[hour].totalShares += shares;\n  hourlyData[hour].totalPosts += 1;\n}\n\n// Hitung rata-rata dan susun hasil\nconst results = Object.values(hourlyData).map(h => ({\n  hour: h.hour,\n  avgEngagement: Math.round(h.totalEngagement / h.totalPosts),\n  avgLikes: Math.round(h.totalLikes / h.totalPosts),\n  avgComments: Math.round(h.totalComments / h.totalPosts),\n  avgShares: Math.round(h.totalShares / h.totalPosts),\n  totalPosts: h.totalPosts\n}));\n\n// Sort berdasarkan engagement tertinggi\nresults.sort((a, b) => b.avgEngagement - a.avgEngagement);\n\n// Ambil 10 teratas\nconst top10 = results.slice(0, 10);\n\n// Tambahkan label rekomendasi\nconst withLabels = top10.map((r, index) => ({\n  ...r,\n  rekomendasi: index < 3 ? 'SANGAT DIREKOMENDASIKAN' : \n               index < 5 ? 'DIREKOMENDASIKAN' : \n               'PERTIMBANGKAN'\n}));\n\nreturn withLabels.map(r => ({ json: r }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "c89c0dd4-c68f-4338-bf3f-aeaf2939ce10",
+      "name": "Analisis Waktu Terbaik"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Baca Data Posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Data Posting": {
+      "main": [
+        [
+          {
+            "node": "Analisis Waktu Terbaik",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hapus Hasil Lama": {
+      "main": [
+        [
+          {
+            "node": "Tulis Hasil Analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tulis Hasil Analisis": {
+      "main": [
+        [
+          {
+            "node": "Format Pesan Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Pesan Telegram": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analisis Waktu Terbaik": {
+      "main": [
+        [
+          {
+            "node": "Hapus Hasil Lama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d312b104-4b54-4776-870d-dc77e783da2a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "434ffe93ddb49d66e254e25d0da4a49b65b056efeba31909d4ad9c8260e28bff"
+  },
+  "nodeGroups": [],
+  "id": "5pfRPrZZc5LTbDuz",
+  "tags": []
+}
