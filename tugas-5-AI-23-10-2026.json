@@ -1,0 +1,327 @@
+{
+  "name": "tugas-5-AI-23-10-2026",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        144
+      ],
+      "id": "15eba530-857a-4f41-bb04-0bb6aa65aecb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://finance.detik.com/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        208
+      ],
+      "id": "25b45f2e-eebb-4a01-9260-118dffc453e2",
+      "name": "Finance Detik RSS"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        640,
+        176
+      ],
+      "id": "e73a73f8-ad72-4228-bdbd-760d9924e375",
+      "name": "Menggabungkan 2 Output RSS"
+    },
+    {
+      "parameters": {
+        "maxItems": 10
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        864,
+        176
+      ],
+      "id": "8f6957f8-3b9d-4dcf-b3e2-fb9aefca0126",
+      "name": "Membatasi Hanya 10"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1088,
+        176
+      ],
+      "id": "4835ed41-1f09-4173-8b66-15c6c1d81150",
+      "name": "Unduh Halaman Web dari setiap URL"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "text",
+              "cssSelector": "body"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        432
+      ],
+      "id": "6b05537a-c745-47b3-b4f2-f44f6745d67f",
+      "name": "Clean kode HTML dan Ekstrak"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        256,
+        432
+      ],
+      "id": "c5db7d5f-29d0-4373-9912-4516dd14186b",
+      "name": "Menggabungkan menjadi 1 blok teks besar"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Instruksi: Ringkas kumpulan berita berikut menjadi 5 Poin Utama Pergerakan Pasar Hari Ini.\n\nBerita:\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        480,
+        432
+      ],
+      "id": "2ff507f6-3ebc-4967-9f5b-af50d94cc82a",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        576
+      ],
+      "id": "72771692-f42c-4431-a3d3-2085ce088b71",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7gCt6Ui6sUfkG1jt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8349128220",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        432
+      ],
+      "id": "c5b22f6c-9e4c-4301-be30-3eb1e821a0fa",
+      "name": "Send a text message",
+      "webhookId": "940be12e-3436-4c9d-b56c-a22dbce16d09",
+      "credentials": {
+        "telegramApi": {
+          "id": "UBeSe0l2TV3RvlxY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.antaranews.com/rss/ekonomi.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -16
+      ],
+      "id": "1eb8283d-6201-482c-9592-766a39794b06",
+      "name": "Antara News RSS"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Finance Detik RSS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Antara News RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Finance Detik RSS": {
+      "main": [
+        [
+          {
+            "node": "Menggabungkan 2 Output RSS",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Menggabungkan 2 Output RSS": {
+      "main": [
+        [
+          {
+            "node": "Membatasi Hanya 10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Membatasi Hanya 10": {
+      "main": [
+        [
+          {
+            "node": "Unduh Halaman Web dari setiap URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unduh Halaman Web dari setiap URL": {
+      "main": [
+        [
+          {
+            "node": "Clean kode HTML dan Ekstrak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean kode HTML dan Ekstrak": {
+      "main": [
+        [
+          {
+            "node": "Menggabungkan menjadi 1 blok teks besar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Menggabungkan menjadi 1 blok teks besar": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Antara News RSS": {
+      "main": [
+        [
+          {
+            "node": "Menggabungkan 2 Output RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "99222f00-f15f-4eaf-9281-753c0be161ef",
+  "meta": {
+    "instanceId": "434ffe93ddb49d66e254e25d0da4a49b65b056efeba31909d4ad9c8260e28bff"
+  },
+  "nodeGroups": [],
+  "id": "PppcsTuK26x5k0PI",
+  "tags": []
+}
