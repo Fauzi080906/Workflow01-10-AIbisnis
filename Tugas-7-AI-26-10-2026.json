@@ -1,0 +1,275 @@
+{
+  "name": "Tugas-7-AI-26-10-2026",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "88d2ff55-c06b-4abc-96b0-ded72d984c05",
+      "name": "Setiap Hari Minggu"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1JK879QTqp7EZ3QxtvibNL6NVq-Z26N4Z6wakVKt9NAk",
+          "mode": "list",
+          "cachedResultName": "Data Dummy Catatan Keuangan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JK879QTqp7EZ3QxtvibNL6NVq-Z26N4Z6wakVKt9NAk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JK879QTqp7EZ3QxtvibNL6NVq-Z26N4Z6wakVKt9NAk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6305f221-4d41-4e75-9a6d-96cb0537531f",
+      "name": "Ambil Log Pengeluaran",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "F9Oylq7SnhclaXkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst today = new Date();\ntoday.setHours(23, 59, 59, 999);\n\nconst sevenDaysAgo = new Date(today);\nsevenDaysAgo.setDate(today.getDate() - 7);\nsevenDaysAgo.setHours(0, 0, 0, 0);\n\nlet formattedString = \"📊 Data pengeluaran saya 7 hari terakhir:\\n\\n\";\nlet hasExpenses = false;\n\nfor (const item of items) {\n  const row = item.json;\n  const rawDate = row['Tanggal'] || '';\n  \n  let expenseDate;\n\n  // Deteksi apakah formatnya ISO (dari n8n) atau Text (DD/MM/YYYY)\n  if (rawDate.includes('T')) {\n     // Format dari sistem otomatis (misal: 2026-10-19T00:00:00.000Z)\n     expenseDate = new Date(rawDate);\n  } else {\n     // Format manual text DD/MM/YYYY\n     const [day, month, year] = rawDate.split(\"/\").map(Number);\n     expenseDate = new Date(year, month - 1, day);\n  }\n\n  // Cek jika tanggalnya valid dan masuk rentang 7 hari\n  if (!isNaN(expenseDate.getTime()) && expenseDate >= sevenDaysAgo && expenseDate <= today) {\n    const kategori = row['Kategori'] || '-';\n    const deskripsi = row['Deskripsi'] || '-';\n    const metode = row['Metode Pembayaran'] || '-';\n    const penerima = row['Penerima'] || '-';\n    const jumlah = row['Jumlah (IDR)'] || '0'; // Perhatikan nama kolom persisnya\n    \n    formattedString += `- ${rawDate} | ${kategori}\\n`;\n    formattedString += `  ${deskripsi}\\n`;\n    formattedString += `  Metode: ${metode}\\n`;\n    formattedString += `  Penerima: ${penerima}\\n`;\n    formattedString += `  Rp${jumlah}\\n\\n`;\n    \n    hasExpenses = true;\n  }\n}\n\nreturn [{\n  json: {\n    hasExpenses: hasExpenses,\n    promptData: formattedString\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "15d6014f-1ddb-4cf6-9aba-2cc5b0ed9217",
+      "name": "Filter 7 Hari & Format Teks"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b23dcd0c-e60c-423a-9ca0-d12397cafe85",
+              "leftValue": "={{ $json.hasExpenses }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        0
+      ],
+      "id": "50a0c362-39f9-4685-80f0-14174448e6cd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptData }}\n\n---\n\nInstruksi: \"Tulis ringkasan kebiasaan belanja saya minggu ini dan beri 1 saran penghematan.\"",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        880,
+        -80
+      ],
+      "id": "e962dacd-1012-4b78-a463-6a0e8b24d5f2",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        128
+      ],
+      "id": "b7827798-57eb-4b65-9f24-c6e0e5f77efe",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7gCt6Ui6sUfkG1jt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8349128220",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        -80
+      ],
+      "id": "e9a85065-6cf7-4a33-bfbe-416a065d6f26",
+      "name": "Pesan True",
+      "webhookId": "1b1baf6c-d661-4e8a-8f6f-4b6d698611b8",
+      "credentials": {
+        "telegramApi": {
+          "id": "UBeSe0l2TV3RvlxY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8349128220",
+        "text": "Tidak ditemukan log pengeluaran untuk 7 hari terakhir. Tidak ada analisis AI yang dibuat.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        208
+      ],
+      "id": "779595d2-74cb-44a4-8181-b39c3581413d",
+      "name": "Pesan False",
+      "webhookId": "fa7995b9-c62f-4648-a42c-948211257efb",
+      "credentials": {
+        "telegramApi": {
+          "id": "UBeSe0l2TV3RvlxY",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Setiap Hari Minggu": {
+      "main": [
+        [
+          {
+            "node": "Ambil Log Pengeluaran",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Log Pengeluaran": {
+      "main": [
+        [
+          {
+            "node": "Filter 7 Hari & Format Teks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter 7 Hari & Format Teks": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pesan False",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Pesan True",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "002a4343-93e7-48b5-8cae-12f0345e0d6f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "434ffe93ddb49d66e254e25d0da4a49b65b056efeba31909d4ad9c8260e28bff"
+  },
+  "nodeGroups": [],
+  "id": "XyqrqCsYF9Pkuk0m",
+  "tags": []
+}
